@@ -1,0 +1,23 @@
+{
+  "name": "webcrawlerusingpuppeteer",
+  "version": "1.0.0",
+  "description": "web crawler based on nodejs using puppeteer library",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suRin01/webCrawlerUsingPuppeteer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suRin01/webCrawlerUsingPuppeteer/issues"
+  },
+  "homepage": "https://github.com/suRin01/webCrawlerUsingPuppeteer#readme",
+  "dependencies": {
+    "nodemon": "^2.0.7",
+    "puppeteer": "^9.1.1"
+  }
+}
