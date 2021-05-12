@@ -8,26 +8,52 @@ const target = {
 
 
 async function getNaverCafeSearchResults(targetPage){
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless :"false"});
   const page = await browser.newPage();
   await page.goto(target.naverCafe+targetPage,  { waitUntil: 'networkidle0' })
-  console.log(target.naverCafe+targetPage)
-  console.log(page)
   let data = await page.evaluate(()=>{
     let scrappedData = [];
-    const detailAreas = document.querySelectorAll("div.detail_area")
+    const detailAreas = document.querySelectorAll("a.item_subject")
+    // const detailAreas = document.querySelectorAll("div.detail_area")
     console.log(detailAreas)
+    //push target url to 
     for(let i = 0; i < detailAreas.length; i++){
-      console.log(detailAreas[i])
-      
-    }
-    return detailAreas;
+      scrappedData.push({source:"naverCafe", herf:detailAreas[i].href})
+    }    
+    return scrappedData;
   })
+
+  for(let i = 0; i < data.length; i++){
+    console.log(data[i]["herf"])
+    console.log("Move to "+data[i]["herf"])
+    await page.goto(data[i]["herf"])
+    await page.evaluate(()=>{
+      // title : div.title_atrea
+      // articleUploadDate : div.article_info > span.date
+      // articleAuthor : div.profile_info > div.nick_box > a.nickname
+      // main text: p.se-text-paragraph-align-
+      // comment : span.text_comment
+      
+      //get title
+      this.data[this.i].title = document.querySelector("div.title_atrea").innerText
+      //get articleUploadDate
+      
+      //get articleAuthor
+
+      //get main text
+
+      //get comment
+
+
+
+    })
+  }
 
   console.log(data);
 
   await browser.close();
 }
+
 
 function main(){
   getNaverCafeSearchResults(1);
