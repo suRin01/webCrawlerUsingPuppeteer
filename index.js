@@ -5,13 +5,26 @@ const target = {
   "daumCafe":"https://top.cafe.daum.net/_c21_/search",
   "daumBlog":"https://search.daum.net/search"
 }
+const mainTextPageSelector = {
+  naverCafe:{
+    title : "h3.title_text",
+    articleUploadDate : "div.article_info > span.date",
+    articleAuthor : "div.profile_info > div.nick_box > a.nickname",
+    mainText: "div.se-main-container",
+    comment : "span.text_comment",
+  }
+}
+
 
 
 async function getNaverCafeSearchResults(targetPage){
 
-  const browser = await puppeteer.launch(Option={headless:false});
+  const browser = await puppeteer.launch(Option={headless:false, devtools: true});
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
+
+
+  // get post page url list
   await page.goto(target.naverCafe+targetPage,  { waitUntil: 'networkidle0' })
   let data = await page.evaluate(()=>{
     let scrappedData = [];
@@ -23,41 +36,36 @@ async function getNaverCafeSearchResults(targetPage){
     return scrappedData;
   })
 
+
+  // get actual data from post with scraped urls
   for(let idx = 0, len = data.length; idx < len; idx++){
     console.log(`Move to ${data[idx]["herf"]}`)
-    await page.goto(data[idx]["herf"])
-    let mainTextPageSelector = {
-      naverCafe:{
-        title : "h3.title_text",
-        articleUploadDate : "div.article_info > span.date",
-        articleAuthor : "div.profile_info > div.nick_box > a.nickname",
-        mainText: "p.se-text-paragraph-align-",
-        comment : "span.text_comment",
-      }
-    }
+    await page.goto(data[idx]["herf"],  { waitUntil: 'networkidle0' })
+    
     const selectorData = mainTextPageSelector["naverCafe"];
-    // await page.waitForSelector(selectorData["title"]);
+    // go through iframe
+    const frame = page.frames().find(frame => frame.name() === "cafe_main")
 
-    const returnedActualPostData = await page.evaluate((selectorData)=>{
+    const returnedActualPostData = await frame.evaluate(async(selectorData)=>{
       let actualPostData = {};
       //get title
-      console.log(selectorData["title"])
-      console.log(document.querySelectorAll("h3"));
+      actualPostData["title"] = document.querySelector(selectorData.title).innerText
 
-      // actualPostData["title"] = document.querySelector(selectorData.title).innerText
       //get articleUploadDate
-      // actualPostData["articleUploadDate"] = document.querySelector(selectorData.articleUploadDate).innerText
+      actualPostData["articleUploadDate"] = document.querySelector(selectorData.articleUploadDate).innerText
       
       //get articleAuthor
-      // actualPostData["articleAuthor"] = document.querySelector(selectorData.articleAuthor).innerText
+      actualPostData["articleAuthor"] = document.querySelector(selectorData.articleAuthor).innerText
 
       //get main text
-      // actualPostData["mainText"] = document.querySelector(selectorData.comment).innerText
+      actualPostData["mainText"] = document.querySelector(selectorData.mainText).innerText
 
       //get comment
       // actualPostData["comment"] = document.querySelector(selectorData.title).innerText
 
       // selectorData["zz"] = 1
+      
+      await new Promise(resolve => setTimeout(resolve, 10000));
       return actualPostData;
     }, selectorData);
 
@@ -66,7 +74,7 @@ async function getNaverCafeSearchResults(targetPage){
 
   console.log(data);
 
-  await browser.close();
+  // await browser.close();
 }
 
 
