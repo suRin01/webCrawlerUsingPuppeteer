@@ -8,45 +8,60 @@ const target = {
 
 
 async function getNaverCafeSearchResults(targetPage){
-  const browser = await puppeteer.launch({headless :"false"});
+
+  const browser = await puppeteer.launch(Option={headless:false});
   const page = await browser.newPage();
+  page.on('console', consoleObj => console.log(consoleObj.text()));
   await page.goto(target.naverCafe+targetPage,  { waitUntil: 'networkidle0' })
   let data = await page.evaluate(()=>{
     let scrappedData = [];
     const detailAreas = document.querySelectorAll("a.item_subject")
-    // const detailAreas = document.querySelectorAll("div.detail_area")
-    console.log(detailAreas)
-    //push target url to 
-    for(let i = 0; i < detailAreas.length; i++){
-      scrappedData.push({source:"naverCafe", herf:detailAreas[i].href})
-    }    
+    
+    for(let idx = 0, len = detailAreas.length; idx < len ; idx++){
+      scrappedData.push({source:"naverCafe", herf:detailAreas[idx].href})
+    }
     return scrappedData;
   })
 
-  for(let i = 0; i < data.length; i++){
-    console.log(data[i]["herf"])
-    console.log("Move to "+data[i]["herf"])
-    await page.goto(data[i]["herf"])
-    await page.evaluate(()=>{
-      // title : div.title_atrea
-      // articleUploadDate : div.article_info > span.date
-      // articleAuthor : div.profile_info > div.nick_box > a.nickname
-      // main text: p.se-text-paragraph-align-
-      // comment : span.text_comment
-      
+  for(let idx = 0, len = data.length; idx < len; idx++){
+    console.log(`Move to ${data[idx]["herf"]}`)
+    await page.goto(data[idx]["herf"])
+    let mainTextPageSelector = {
+      naverCafe:{
+        title : "h3.title_text",
+        articleUploadDate : "div.article_info > span.date",
+        articleAuthor : "div.profile_info > div.nick_box > a.nickname",
+        mainText: "p.se-text-paragraph-align-",
+        comment : "span.text_comment",
+      }
+    }
+    const selectorData = mainTextPageSelector["naverCafe"];
+    // await page.waitForSelector(selectorData["title"]);
+
+    const returnedActualPostData = await page.evaluate((selectorData)=>{
+      let actualPostData = {};
       //get title
-      this.data[this.i].title = document.querySelector("div.title_atrea").innerText
+      console.log(selectorData["title"])
+      console.log(document.querySelectorAll("h3"));
+
+      // actualPostData["title"] = document.querySelector(selectorData.title).innerText
       //get articleUploadDate
+      // actualPostData["articleUploadDate"] = document.querySelector(selectorData.articleUploadDate).innerText
       
       //get articleAuthor
+      // actualPostData["articleAuthor"] = document.querySelector(selectorData.articleAuthor).innerText
 
       //get main text
+      // actualPostData["mainText"] = document.querySelector(selectorData.comment).innerText
 
       //get comment
+      // actualPostData["comment"] = document.querySelector(selectorData.title).innerText
 
+      // selectorData["zz"] = 1
+      return actualPostData;
+    }, selectorData);
 
-
-    })
+    console.log(returnedActualPostData);
   }
 
   console.log(data);
