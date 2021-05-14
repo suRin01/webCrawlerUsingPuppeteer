@@ -1,3 +1,6 @@
+const crawler = require("./targetPostUrlCrawler")
+const htmlHandler = require("./htmlHandler")
+
 const puppeteer = require('puppeteer');
 const target = {
   "naverCafe":"https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
@@ -19,62 +22,28 @@ const mainTextPageSelector = {
 
 async function getNaverCafeSearchResults(targetPage){
 
-  const browser = await puppeteer.launch(Option={headless:false, devtools: true});
+  const browser = await puppeteer.launch(Option={headless:true, devtools: false});
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
 
 
-  // get post page url list
-  await page.goto(target.naverCafe+targetPage,  { waitUntil: 'networkidle0' })
-  let data = await page.evaluate(()=>{
-    let scrappedData = [];
-    const detailAreas = document.querySelectorAll("a.item_subject")
-    
-    for(let idx = 0, len = detailAreas.length; idx < len ; idx++){
-      scrappedData.push({source:"naverCafe", herf:detailAreas[idx].href})
-    }
-    return scrappedData;
-  })
+  let data = await crawler.getUrlsOnSearchPage(page, target.naverCafe + targetPage, "a.item_subject")
 
+  const selectorData = mainTextPageSelector["naverCafe"];
 
   // get actual data from post with scraped urls
   for(let idx = 0, len = data.length; idx < len; idx++){
     console.log(`Move to ${data[idx]["herf"]}`)
-    await page.goto(data[idx]["herf"],  { waitUntil: 'networkidle0' })
+    const returnedActualPostData = await htmlHandler.postContentsParser(page, data[idx]["herf"], "cafe_main", selectorData)
     
-    const selectorData = mainTextPageSelector["naverCafe"];
-    // go through iframe
-    const frame = page.frames().find(frame => frame.name() === "cafe_main")
+    data[idx]["postData"] = {};
+    data[idx]["postData"] = returnedActualPostData;
 
-    const returnedActualPostData = await frame.evaluate(async(selectorData)=>{
-      let actualPostData = {};
-      //get title
-      actualPostData["title"] = document.querySelector(selectorData.title).innerText
-
-      //get articleUploadDate
-      actualPostData["articleUploadDate"] = document.querySelector(selectorData.articleUploadDate).innerText
-      
-      //get articleAuthor
-      actualPostData["articleAuthor"] = document.querySelector(selectorData.articleAuthor).innerText
-
-      //get main text
-      actualPostData["mainText"] = document.querySelector(selectorData.mainText).innerText
-
-      //get comment
-      // actualPostData["comment"] = document.querySelector(selectorData.title).innerText
-
-      // selectorData["zz"] = 1
-      
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      return actualPostData;
-    }, selectorData);
-
-    console.log(returnedActualPostData);
   }
 
   console.log(data);
 
-  // await browser.close();
+  await browser.close();
 }
 
 
@@ -83,22 +52,6 @@ function main(){
 }
 
 main();
-
-//screenshot example
-/*
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('https://example.com');
-  await page.screenshot({
-    fullPage: true,
-    path: 'example.png' 
-    });
-
-  await browser.close();
-})();
-
-*/
 
 /*
 
