@@ -21,7 +21,8 @@ const mainTextPageSelector = {
 
 
 async function getNaverCafeSearchResults(targetPage){
-
+  // too many await function, and using page as parameter is not nice(i think, ) 
+  // so weekend = study time
   const browser = await puppeteer.launch(Option={headless:true, devtools: false});
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
