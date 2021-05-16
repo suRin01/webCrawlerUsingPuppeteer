@@ -1,4 +1,3 @@
-const crawler = require("./targetPostUrlCrawler")
 const htmlHandler = require("./htmlHandler")
 
 const puppeteer = require('puppeteer');
@@ -21,21 +20,23 @@ const mainTextPageSelector = {
 
 
 async function getNaverCafeSearchResults(targetPage){
-  // too many await function, and using page as parameter is not nice(i think, ) 
-  // so weekend = study time
-  const browser = await puppeteer.launch(Option={headless:true, devtools: false});
+  const debugMode = false;
+  const browser = await puppeteer.launch(Option={headless:!debugMode, devtools: debugMode});
   const page = await browser.newPage();
   page.on('console', consoleObj => console.log(consoleObj.text()));
 
-
-  let data = await crawler.getUrlsOnSearchPage(page, target.naverCafe + targetPage, "a.item_subject")
+  await page.goto(target.naverCafe + targetPage,  { waitUntil: 'networkidle0' })
+  let data = await htmlHandler.getUrlsOnSearchPage(page, "a.item_subject")
 
   const selectorData = mainTextPageSelector["naverCafe"];
 
   // get actual data from post with scraped urls
   for(let idx = 0, len = data.length; idx < len; idx++){
     console.log(`Move to ${data[idx]["herf"]}`)
-    const returnedActualPostData = await htmlHandler.postContentsParser(page, data[idx]["herf"], "cafe_main", selectorData)
+    await page.goto(data[idx]["herf"], { waitUntil: 'networkidle0' })
+    const frame = page.frames().find(frame => frame.name() === "cafe_main")
+
+    const returnedActualPostData = await htmlHandler.postContentsParser(frame, selectorData)
     
     data[idx]["postData"] = {};
     data[idx]["postData"] = returnedActualPostData;

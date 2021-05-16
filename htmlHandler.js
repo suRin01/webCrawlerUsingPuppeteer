@@ -1,11 +1,4 @@
-async function postContentsParser(page, postPageUrl, innerIframeId, selectorData) {
-    console.log(postPageUrl)
-    await page.goto(postPageUrl, { waitUntil: 'networkidle0' })
-
-    // const selectorData = JSONselectorString["naverCafe"];
-    // go through iframe
-    const frame = page.frames().find(frame => frame.name() === innerIframeId)
-    // const frame = page.frames().find(frame => frame.name() === "cafe_main")
+async function postContentsParser(page, selectorData) {
 
     return await frame.evaluate((selectorData) => {
         let actualPostData = {};
@@ -34,6 +27,19 @@ async function postContentsParser(page, postPageUrl, innerIframeId, selectorData
 
 }
 
-
+async function getUrlsOnSearchPage(onPage, elementSelector){
+    return await onPage.evaluate((elementSelector)=>{
+      let scrappedData = [];
+      // const detailAreas = document.querySelectorAll("a.item_subject")
+      const detailAreas = document.querySelectorAll(elementSelector)
+      
+      for(let idx = 0, len = detailAreas.length; idx < len ; idx++){
+        scrappedData.push({source:"naverCafe", herf:detailAreas[idx].href})
+      }
+      return scrappedData;
+    }, elementSelector)
+  }
+  
+module.exports.getUrlsOnSearchPage = getUrlsOnSearchPage;
 
 module.exports.postContentsParser = postContentsParser;
