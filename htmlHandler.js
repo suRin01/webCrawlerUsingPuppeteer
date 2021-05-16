@@ -1,6 +1,6 @@
 async function postContentsParser(page, selectorData) {
 
-    return await frame.evaluate((selectorData) => {
+    return await page.evaluate((selectorData) => {
         let actualPostData = {};
         //get title
         actualPostData["title"] = document.querySelector(selectorData.title).innerText

@@ -73,6 +73,13 @@ pageNo=(int)page
 rangeType=(string)search date range
 orderBy=(string)recentdate/sim -> 최신순/정확도순 정렬
 keyword=(string)searchTopic
+searchPage: a.desc_inner
+title: iframe#mainFrame > div.(se-module se-module-text se-title-text)
+articleUploadDate: span.(se_publishDate pcol2)
+articleAuthor: a.(link pcol2)
+mainText: div.se-main-container
+
+
 
 daum cafe
 https://top.cafe.daum.net/_c21_/search?search_opt=board&sort_type=recency&q=%EC%BD%94%EB%A1%9C%EB%82%98
