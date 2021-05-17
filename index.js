@@ -1,88 +1,81 @@
-const htmlHandler = require("./htmlHandler")
+const chromeHandler = require("./headlessChromeHandler")
 
-const puppeteer = require('puppeteer');
 const target = {
   "naverCafe":"https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
-  "naverBlog":"https://section.blog.naver.com/Search/Post.nhn",
+  "naverBlog":"https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
   "daumCafe":"https://top.cafe.daum.net/_c21_/search",
   "daumBlog":"https://search.daum.net/search"
 }
-const mainTextPageSelector = {
+
+const crawlerConfig = {
   naverCafe:{
-    title : "h3.title_text",
-    articleUploadDate : "div.article_info > span.date",
-    articleAuthor : "div.profile_info > div.nick_box > a.nickname",
-    mainText: "div.se-main-container",
-    comment : "span.text_comment",
+    source: "naverCafe",
+    searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
+    searchPagePostURLSelector: "a.item_subject",
+    innerIframeId:"cafe_main",
+    postSelectorData: {
+      title: "h3.title_text",
+      articleUploadDate: "div.article_info > span.date",
+      articleAuthor: "div.profile_info > div.nick_box > a.nickname",
+      mainText: "div.se-main-container",
+      comment: "span.text_comment",
+      unnecessaryElements: []
+    }
+  },
+  naverBlog: {
+    source: "naverBlog",
+    searchPageBaseURL: "https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
+    searchPagePostURLSelector: "a.desc_inner",
+    innerIframeId: "mainFrame",
+    postSelectorData: {
+      title: "[class*=se-ff-][class*=se-fs-] , div.htitle > span",
+      articleUploadDate: ".se_publishDate.pcol2, p._postAddDate",
+      articleAuthor: ".link.pcol2, div.nick > strong",
+      mainText: "div.se-main-container, div#postViewArea",
+      comment: ".u_cbox_contents, div.u_cbox_text_wrap",
+      unnecessaryElements: []
+    }
+  },
+  daumCafe: {
+    source: "daumCafe",
+    searchPageBaseURL: "https://top.cafe.daum.net/_c21_/search?search_opt=board&SearchType=tab&sort_type=recency&q=%EC%BD%94%EB%A1%9C%EB%82%98&p=",
+    searchPagePostURLSelector: "a.link_tit",
+    innerIframeId: "down",
+    postSelectorData: {
+      title: "strong.tit_info",
+      articleUploadDate: "div.cover_info > span:nth-child(4)",
+      articleAuthor: "div.cover_info > a:nth-child(1)",
+      mainText: "div#user_contents",
+      comment: "div.comment_post > div.box_post",
+      unnecessaryElements: []
+    }
+  },
+  daumBlog: {
+    source: "daumBlog",
+    searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
+    searchPagePostURLSelector: "a.f_link_b",
+    innerIframeId: "",
+    postSelectorData: {
+      title: "h2.title-article, strong.cB_Title.cB_TitleImage",
+      articleUploadDate: "div.box-info > p.date, span.cB_Tdate",
+      articleAuthor: "strong.name",
+      mainText: "div.tt_article_useless_p_margin, div.cContentBody",
+      comment: "div.comment_post > div.box_post",
+      unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
+    }
   }
 }
 
-
-
-async function getNaverCafeSearchResults(targetPage){
-  const debugMode = false;
-  const browser = await puppeteer.launch(Option={headless:!debugMode, devtools: debugMode});
-  const page = await browser.newPage();
-  page.on('console', consoleObj => console.log(consoleObj.text()));
-
-  await page.goto(target.naverCafe + targetPage,  { waitUntil: 'networkidle0' })
-  let data = await htmlHandler.getUrlsOnSearchPage(page, "a.item_subject")
-
-  const selectorData = mainTextPageSelector["naverCafe"];
-
-  // get actual data from post with scraped urls
-  for(let idx = 0, len = data.length; idx < len; idx++){
-    console.log(`Move to ${data[idx]["herf"]}`)
-    await page.goto(data[idx]["herf"], { waitUntil: 'networkidle0' })
-    const frame = page.frames().find(frame => frame.name() === "cafe_main")
-
-    const returnedActualPostData = await htmlHandler.postContentsParser(frame, selectorData)
-    
-    data[idx]["postData"] = {};
-    data[idx]["postData"] = returnedActualPostData;
-
-  }
-
-  console.log(data);
-
-  await browser.close();
-}
 
 
 function main(){
-  getNaverCafeSearchResults(1);
+  chromeHandler.automaticChromeHandler(crawlerConfig["daumBlog"], 1)
 }
 
 main();
 
 /*
 
-
-naver cafe
-https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=1
-q=(string)searchTopic
-od=(int)page -> 최신순 정렬
-p=(int)page -> 정확도순 정렬
-#app > div > div.container > div > div.SectionSearchContent > div.section_search_content > div > div.article_list_area > ul > li:nth-child(1)
-#app > div > div.container > div > div.SectionSearchContent > div.section_search_content > div > div.article_list_area > ul > li:nth-child(2)
-
-
-naver blog
-https://section.blog.naver.com/Search/Post.nhn?pageNo=1&rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98
-pageNo=(int)page
-rangeType=(string)search date range
-orderBy=(string)recentdate/sim -> 최신순/정확도순 정렬
-keyword=(string)searchTopic
-searchPage: a.desc_inner
-title: iframe#mainFrame > div.(se-module se-module-text se-title-text)
-articleUploadDate: span.(se_publishDate pcol2)
-articleAuthor: a.(link pcol2)
-mainText: div.se-main-container
-
-
-
-daum cafe
-https://top.cafe.daum.net/_c21_/search?search_opt=board&sort_type=recency&q=%EC%BD%94%EB%A1%9C%EB%82%98
 
 
 daum blog
