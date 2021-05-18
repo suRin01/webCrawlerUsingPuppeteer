@@ -1,12 +1,4 @@
 const chromeHandler = require("./headlessChromeHandler")
-
-const target = {
-  "naverCafe":"https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
-  "naverBlog":"https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
-  "daumCafe":"https://top.cafe.daum.net/_c21_/search",
-  "daumBlog":"https://search.daum.net/search"
-}
-
 const crawlerConfig = {
   naverCafe:{
     source: "naverCafe",

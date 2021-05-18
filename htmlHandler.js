@@ -53,5 +53,4 @@ async function getUrlsOnSearchPage(onPage, elementSelector, postSource){
   }
   
 module.exports.getUrlsOnSearchPage = getUrlsOnSearchPage;
-
 module.exports.postContentsParser = postContentsParser;

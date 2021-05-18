@@ -18,6 +18,7 @@
   "homepage": "https://github.com/suRin01/webCrawlerUsingPuppeteer#readme",
   "dependencies": {
     "nodemon": "^2.0.7",
-    "puppeteer": "^9.1.1"
+    "puppeteer": "^9.1.1",
+    "sequelize": "^6.6.2"
   }
 }
