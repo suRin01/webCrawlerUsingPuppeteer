@@ -66,14 +66,4 @@ function main(){
 
 main();
 
-/*
-
-
-
-daum blog
-https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&page=1&DA=STC
-
-
-
-
-*/
+// 0519 update -> mariadb install, setup firewall and searched database configure, database designe
