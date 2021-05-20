@@ -1,11 +1,10 @@
-const puppeteer = require('puppeteer');
+
 const htmlHandler = require("./htmlHandler")
 
-async function automaticChromeHandler(JSONconfig, targetPage) {
-    const debugMode = false;
-    const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode });
+async function automaticChromeHandler(browser, JSONconfig, targetPage) {
     const page = await browser.newPage();
-    page.on('console', consoleObj => console.log(consoleObj.text()));
+    // pipe page's console data to terminal
+    // page.on('console', consoleObj => console.log(consoleObj.text()));
 
     console.log(`go to ${JSONconfig["searchPageBaseURL"] + targetPage}`)
     await page.goto(JSONconfig["searchPageBaseURL"] + targetPage, { waitUntil: 'networkidle0' })
@@ -30,9 +29,8 @@ async function automaticChromeHandler(JSONconfig, targetPage) {
         data[idx]["postData"] = returnedActualPostData;
 
     }
-    console.log(data);
 
-    await browser.close();
+    return data;
 }
 
 

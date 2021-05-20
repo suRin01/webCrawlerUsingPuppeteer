@@ -10,22 +10,22 @@ async function postContentsParser(page, selectorData) {
       }
       let actualPostData = {};
       //get title
-      console.log("title")
+      console.log("    get title")
       actualPostData["title"] = document.querySelector(selectorData.title).innerText
 
-      console.log("articleUploadDate")
+      console.log("    get articleUploadDate")
       //get articleUploadDate
       actualPostData["articleUploadDate"] = document.querySelector(selectorData.articleUploadDate).innerText
 
-      console.log("titarticleAuthorle")
+      console.log("    get titarticleAuthorle")
       //get articleAuthor
       actualPostData["articleAuthor"] = document.querySelector(selectorData.articleAuthor).innerText
 
-      console.log("mainText")
+      console.log("    get mainText")
       //get main text
       actualPostData["mainText"] = document.querySelector(selectorData.mainText).innerText
 
-      console.log("comment")
+      console.log("    get comment")
       //get comment
       let comments = document.querySelectorAll(selectorData.comment);
       console.log(comments.length)

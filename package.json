@@ -17,8 +17,11 @@
   },
   "homepage": "https://github.com/suRin01/webCrawlerUsingPuppeteer#readme",
   "dependencies": {
+    "date-format-parse": "^0.2.6",
+    "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "puppeteer": "^9.1.1",
-    "sequelize": "^6.6.2"
+    "sequelize": "^6.6.2",
+    "sequelize-auto": "^0.8.3"
   }
 }

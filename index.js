@@ -1,4 +1,7 @@
+const puppeteer = require('puppeteer');
 const chromeHandler = require("./headlessChromeHandler")
+const models = require("./models")
+const dateFormatParse = require("date-format-parse")
 const crawlerConfig = {
   naverCafe:{
     source: "naverCafe",
@@ -60,10 +63,29 @@ const crawlerConfig = {
 
 
 
-function main(){
-  chromeHandler.automaticChromeHandler(crawlerConfig["daumBlog"], 1)
+async function main(){
+  
+  const debugMode = false;
+  const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode });
+
+  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], 1)
+
+  for(let idx=0, len=crawledData.length; idx<len; idx++){
+    models.data.create({
+      source: crawledData[idx]["source"],
+      source_url:crawledData[idx]["herf"] ,
+      title: crawledData[idx]["postData"]["title"],
+      author: crawledData[idx]["postData"]["articleAuthor"],
+      
+      date: dateFormatParse.format(dateFormatParse.parse(crawledData[idx]["postData"]["articleUploadDate"], 'YY.MM.DD HH:mm'), "YYYY-MM-DD"),
+      main_text: crawledData[idx]["postData"]["mainText"]
+    }).then(() =>{
+      console.log("Data is created!")
+    })
+    .catch(e=> console.log(e))
+  }
+
+  await browser.close();
 }
 
 main();
-
-// 0519 update -> mariadb install, setup firewall and searched database configure, database designe
