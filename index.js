@@ -2,10 +2,16 @@ const puppeteer = require('puppeteer');
 const chromeHandler = require("./headlessChromeHandler")
 const models = require("./models")
 const dateFormatParse = require("date-format-parse")
+const utils = require("util")
 const crawlerConfig = {
   naverCafe:{
     source: "naverCafe",
     searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
+    searchPageTargetDateStart: "&ps=",
+    //ps=2021.05.01
+    searchPageTargetDateStart: "&pe=",
+    //pe=2021.05.01
+    searchDateFormat: "YYYY.MM.DD",
     searchPagePostURLSelector: "a.item_subject",
     innerIframeId:"cafe_main",
     postSelectorData: {
@@ -20,6 +26,11 @@ const crawlerConfig = {
   naverBlog: {
     source: "naverBlog",
     searchPageBaseURL: "https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
+    searchPageTargetDateStart: "&startDate=",
+    //startDate=2021-05-12
+    searchPageTargetDateStart: "&endDate=",
+    //endDate=2021-05-19
+    searchDateFormat: "YYYY-MM-DD",
     searchPagePostURLSelector: "a.desc_inner",
     innerIframeId: "mainFrame",
     postSelectorData: {
@@ -33,7 +44,12 @@ const crawlerConfig = {
   },
   daumCafe: {
     source: "daumCafe",
-    searchPageBaseURL: "https://top.cafe.daum.net/_c21_/search?search_opt=board&SearchType=tab&sort_type=recency&q=%EC%BD%94%EB%A1%9C%EB%82%98&p=",
+    searchPageBaseURL: "http://search.daum.net/search?w=cafe&DA=STC&m=board&q=%EC%BD%94%EB%A1%9C%EB%82%98&find=off&sort=timely&lpp=10&period=u&ccl_derivative=&ccl_commercial=&p=",
+    searchPageTargetDateStart: "&sd=",
+    //20210520000000 date+HHDDMM
+    searchPageTargetDateStart: "&ed=",
+    //20210520235959 date+HHDDMM
+    searchDateFormat: "YYYYMMDD",
     searchPagePostURLSelector: "a.link_tit",
     innerIframeId: "down",
     postSelectorData: {
@@ -47,7 +63,12 @@ const crawlerConfig = {
   },
   daumBlog: {
     source: "daumBlog",
-    searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
+    searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&period=u&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
+    searchPageTargetDateStart: "&sd=",
+    //20210520000000 date+HHDDMM
+    searchPageTargetDateStart: "&ed=",
+    //20210520235959 date+HHDDMM
+    searchDateFormat: "YYYYMMDD",
     searchPagePostURLSelector: "a.f_link_b",
     innerIframeId: "",
     postSelectorData: {
@@ -55,7 +76,7 @@ const crawlerConfig = {
       articleUploadDate: "div.box-info > p.date, span.cB_Tdate",
       articleAuthor: "strong.name",
       mainText: "div.tt_article_useless_p_margin, div.cContentBody",
-      comment: "div.comment_post > div.box_post",
+      comment: "div.comment_post > div.box_post, div.item-reply.rp_general",
       unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
     }
   }
@@ -68,21 +89,10 @@ async function main(){
   const debugMode = false;
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode });
 
-  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], 1)
+  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"])
 
   for(let idx=0, len=crawledData.length; idx<len; idx++){
-    models.data.create({
-      source: crawledData[idx]["source"],
-      source_url:crawledData[idx]["herf"] ,
-      title: crawledData[idx]["postData"]["title"],
-      author: crawledData[idx]["postData"]["articleAuthor"],
-      
-      date: dateFormatParse.format(dateFormatParse.parse(crawledData[idx]["postData"]["articleUploadDate"], 'YY.MM.DD HH:mm'), "YYYY-MM-DD"),
-      main_text: crawledData[idx]["postData"]["mainText"]
-    }).then(() =>{
-      console.log("Data is created!")
-    })
-    .catch(e=> console.log(e))
+    console.log(crawledData[idx])
   }
 
   await browser.close();

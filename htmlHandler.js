@@ -31,6 +31,7 @@ async function postContentsParser(page, selectorData) {
       console.log(comments.length)
       actualPostData["comments"] = [];
       for (let idx = 0, len = comments.length; idx < len; idx++) {
+        console.log("    "+ comments[idx].innerText)
         actualPostData["comments"][idx] = comments[idx].innerText;
       }
 
