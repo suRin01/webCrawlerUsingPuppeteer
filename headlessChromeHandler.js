@@ -1,5 +1,6 @@
-
+const db = require("./dbConnector")
 const htmlHandler = require("./htmlHandler")
+const dateFormatParse = require("date-format-parse")
 
 async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     const page = await browser.newPage();
@@ -8,13 +9,15 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     let currentPageItemCount = -1;
 
     // pipe page's console data to terminal
-    page.on('console', consoleObj => console.log(consoleObj.text()));
+    // page.on('console', consoleObj => console.log(consoleObj.text()));
 
     while((previousPageItemCount==currentPageItemCount) || (previousPageItemCount == -1)){
         previousPageItemCount = currentPageItemCount;
-
-        console.log(`go to ${JSONconfig["searchPageBaseURL"] + pageNum}`)
-        await page.goto(JSONconfig["searchPageBaseURL"] + pageNum, { waitUntil: 'networkidle0' })
+        let targetDateSearchPage = JSONconfig["searchPageBaseURL"] + pageNum  
+            + JSONconfig["searchPageTargetDateStart"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormat"])+"000000"
+            + JSONconfig["searchPageTargetDateEnd"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormat"])+"235959"
+        console.log(`go to ${targetDateSearchPage}`)
+        await page.goto(targetDateSearchPage, { waitUntil: 'networkidle0' })
         let data = await htmlHandler.getUrlsOnSearchPage(page, JSONconfig["searchPagePostURLSelector"], JSONconfig["source"])
         currentPageItemCount = data.length
     
@@ -36,12 +39,11 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
             data[idx]["postData"] = returnedActualPostData;
     
         }
+        db.putData(data)
 
         pageNum += 1;
     }
-    
-
-    return data;
+    return;
 }
 
 

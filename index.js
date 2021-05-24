@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
 const chromeHandler = require("./headlessChromeHandler")
-const models = require("./models")
 const dateFormatParse = require("date-format-parse")
 const utils = require("util")
 const crawlerConfig = {
@@ -9,7 +8,7 @@ const crawlerConfig = {
     searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
     searchPageTargetDateStart: "&ps=",
     //ps=2021.05.01
-    searchPageTargetDateStart: "&pe=",
+    searchPageTargetDateEnd: "&pe=",
     //pe=2021.05.01
     searchDateFormat: "YYYY.MM.DD",
     searchPagePostURLSelector: "a.item_subject",
@@ -28,7 +27,7 @@ const crawlerConfig = {
     searchPageBaseURL: "https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
     searchPageTargetDateStart: "&startDate=",
     //startDate=2021-05-12
-    searchPageTargetDateStart: "&endDate=",
+    searchPageTargetDateEnd: "&endDate=",
     //endDate=2021-05-19
     searchDateFormat: "YYYY-MM-DD",
     searchPagePostURLSelector: "a.desc_inner",
@@ -47,7 +46,7 @@ const crawlerConfig = {
     searchPageBaseURL: "http://search.daum.net/search?w=cafe&DA=STC&m=board&q=%EC%BD%94%EB%A1%9C%EB%82%98&find=off&sort=timely&lpp=10&period=u&ccl_derivative=&ccl_commercial=&p=",
     searchPageTargetDateStart: "&sd=",
     //20210520000000 date+HHDDMM
-    searchPageTargetDateStart: "&ed=",
+    searchPageTargetDateEnd: "&ed=",
     //20210520235959 date+HHDDMM
     searchDateFormat: "YYYYMMDD",
     searchPagePostURLSelector: "a.link_tit",
@@ -66,7 +65,7 @@ const crawlerConfig = {
     searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&period=u&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
     searchPageTargetDateStart: "&sd=",
     //20210520000000 date+HHDDMM
-    searchPageTargetDateStart: "&ed=",
+    searchPageTargetDateEnd: "&ed=",
     //20210520235959 date+HHDDMM
     searchDateFormat: "YYYYMMDD",
     searchPagePostURLSelector: "a.f_link_b",
@@ -89,7 +88,7 @@ async function main(){
   const debugMode = false;
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode });
 
-  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"])
+  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], new Date("2021. 05. 20"))
 
   for(let idx=0, len=crawledData.length; idx<len; idx++){
     console.log(crawledData[idx])
