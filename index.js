@@ -90,10 +90,6 @@ async function main(){
 
   let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], new Date("2021. 05. 20"))
 
-  for(let idx=0, len=crawledData.length; idx<len; idx++){
-    console.log(crawledData[idx])
-  }
-
   await browser.close();
 }
 
