@@ -14,8 +14,8 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     while((previousPageItemCount==currentPageItemCount) || (previousPageItemCount == -1)){
         previousPageItemCount = currentPageItemCount;
         let targetDateSearchPage = JSONconfig["searchPageBaseURL"] + pageNum  
-            + JSONconfig["searchPageTargetDateStart"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormat"])+"000000"
-            + JSONconfig["searchPageTargetDateEnd"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormat"])+"235959"
+                + JSONconfig["searchPageTargetDateStart"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormatStart"])
+                + JSONconfig["searchPageTargetDateEnd"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormatEnd"])
         console.log(`go to ${targetDateSearchPage}`)
         await page.goto(targetDateSearchPage, { waitUntil: 'networkidle0' })
         let data = await htmlHandler.getUrlsOnSearchPage(page, JSONconfig["searchPagePostURLSelector"], JSONconfig["source"])
@@ -37,10 +37,11 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     
             data[idx]["postData"] = {};
             data[idx]["postData"] = returnedActualPostData;
+            console.log(data[idx]["postData"])
     
         }
         db.putData(data)
-
+ 
         pageNum += 1;
     }
     return;

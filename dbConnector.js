@@ -9,7 +9,9 @@ function putData(data) {
       
       date: data[idx]["postData"]["articleUploadDate"],
       main_text: data[idx]["postData"]["mainText"]
-    }).then(() =>{
+    }).then((r) =>{
+      console.log(r.idx)
+      putComments(r.idx, data[idx]["comments"])
       console.log("Data is created!")
     })
     .catch(e=> {
@@ -18,6 +20,15 @@ function putData(data) {
   }
     
     
+}
+
+function putComments(postId, comments){
+  for(let idx=0, len = comments.length; idx<len; idx++){
+    models.comments.create({
+      post_id: postId,
+      comments: comments[idx]
+    })
+  }
 }
 
 module.exports.putData = putData
