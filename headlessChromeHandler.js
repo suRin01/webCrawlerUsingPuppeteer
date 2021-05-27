@@ -37,8 +37,9 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     
             data[idx]["postData"] = {};
             data[idx]["postData"] = returnedActualPostData;
-            console.log(data[idx]["postData"])
-    
+            // console.log(data[idx]["postData"])
+            
+            
         }
         db.putData(data)
  

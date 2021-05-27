@@ -77,7 +77,7 @@ const crawlerConfig = {
       articleUploadDate: "div.box-info > p.date, span.cB_Tdate",
       articleAuthor: "strong.name",
       mainText: "div.tt_article_useless_p_margin, div.cContentBody",
-      comment: "div.comment_post > div.box_post, div.item-reply.rp_general, p.text, div.cont",
+      comment: "div.comment_post > div.box_post, p.text, div.cont, span.text_reply",
       unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
     }
   }
@@ -87,10 +87,15 @@ const crawlerConfig = {
 
 async function main(){
   
-  const debugMode = true;
+  const debugMode = false;
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
 
-  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], new Date("2021. 05. 20"))
+  let targetDate = new Date("2021. 05. 20");
+
+  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverCafe"], targetDate)
+  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], targetDate)
+  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverBlog"], targetDate)
+  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], targetDate)
 
   await browser.close();
 }
