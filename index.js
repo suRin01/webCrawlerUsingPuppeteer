@@ -3,7 +3,7 @@ const chromeHandler = require("./headlessChromeHandler")
 const crawlerConfig = {
   naverCafe:{
     source: "naverCafe",
-    searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=2&p=",
+    searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=1&pr=7&p=",
     searchPageTargetDateStart: "&ps=",
     //ps=2021.05.01
     searchPageTargetDateEnd: "&pe=",
@@ -16,7 +16,7 @@ const crawlerConfig = {
       title: "h3.title_text",
       articleUploadDate: "div.article_info > span.date",
       articleAuthor: "div.profile_info > div.nick_box > a.nickname",
-      mainText: "div.se-main-container",
+      mainText: "div.se-main-container, div.ContentRenderer",
       comment: "span.text_comment",
       unnecessaryElements: []
     }
@@ -91,11 +91,16 @@ async function main(){
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
 
   let targetDate = new Date("2021. 05. 20");
-
-  let crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverCafe"], targetDate)
-  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], targetDate)
-  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverBlog"], targetDate)
-  crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], targetDate)
+  let endDate = new Date("2019. 12 .01");
+  while(targetDate > endDate){
+    await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverCafe"], targetDate)
+    .then(targetDate = new Date(targetDate.setDate(targetDate.getDate() - 1)))
+    console.log("naver cafe done")
+  }
+  // let crawledData = 
+  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], targetDate)
+  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverBlog"], targetDate)
+  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], targetDate)
 
   await browser.close();
 }

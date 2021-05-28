@@ -23,11 +23,10 @@ function putData(data) {
 }
 
 function putComments(postId, comments){
-  console.log("comment adding start")
   for(let idx=0, len = comments.length; idx<len; idx++){
     models.comments.create({
       post_id: postId,
-      comments: comments[idx]
+      comment: comments[idx]
     }).then(r=>{
       console.log("Comment is created")
     }).catch(e=>{
