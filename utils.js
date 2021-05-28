@@ -1,13 +1,13 @@
 const dateFormatParse = require("date-format-parse")
 function dateNormalization(unnormalizedDate){
     console.log("date in:  "+unnormalizedDate)
-    if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD. H:m'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD. H:m'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. D. H:m'), "YYYY-MM-DD")
+    if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD. H:m'))){
+      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD. H:m'), "YYYY-MM-DD"))
+      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.D. H:m'), "YYYY-MM-DD")
     }
-    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD.'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD.'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD.'), "YYYY-MM-DD")
+    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'))){
+      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'), "YYYY-MM-DD"))
+      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'), "YYYY-MM-DD")
     }
     if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD H:m'))){
       console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD H:m'), "YYYY-MM-DD"))
