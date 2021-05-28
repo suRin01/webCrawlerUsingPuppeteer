@@ -55,6 +55,7 @@ async function postContentsParser(page, selectorData) {
     return actualPostData;
   }, selectorData);
   data["articleUploadDate"] = utils.dateNormalization(data["articleUploadDate"]);
+  
   await page.waitFor(3000);
   return data;
 

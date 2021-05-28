@@ -1,6 +1,7 @@
 const models = require("./models")
 function putData(data) {
   for(let idx=0, len=data.length; idx<len; idx++){
+    console.log(data[idx]["postData"]["articleUploadDate"])
     models.data.create({
       source: data[idx]["source"],
       source_url:data[idx]["herf"] ,
