@@ -1,21 +1,18 @@
 const dateFormatParse = require("date-format-parse")
 function dateNormalization(unnormalizedDate){
-    console.log("date in:  "+unnormalizedDate)
-    if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD. H:m'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD. H:m'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.D. H:m'), "YYYY-MM-DD")
+    console.log("date in:  " + unnormalizedDate)
+    let out
+    if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D. H:m'))){
+      out = dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D. H:m'), "YYYY-MM-DD")
     }
-    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD.'), "YYYY-MM-DD")
+    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD H:m'))){
+      out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD H:m'), "YYYY-MM-DD")
     }
-    if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD H:m'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD H:m'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD H:m'), "YYYY-MM-DD")
+    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D.'))){
+      out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D.'), "YYYY-MM-DD")
     }
-    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD'))){
-      console.log("date out: "+ dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD'), "YYYY-MM-DD"))
-      return dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. MM. DD'), "YYYY-MM-DD")
+    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD'))){
+      out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD'), "YYYY-MM-DD")
     }
     else if((new RegExp("([0-9])*(시간|분)( 전)")).test(unnormalizedDate)){
       let currentDate = new Date();
@@ -26,8 +23,10 @@ function dateNormalization(unnormalizedDate){
         currentDate.setMinutes(currentDate.getMinutes() - normalized[1])
       }
       console.log("date out: "+ dateFormatParse.format(currentDate, "YYYY-MM-DD"))
-      return dateFormatParse.format(currentDate, "YYYY-MM-DD")
+      out =  dateFormatParse.format(currentDate, "YYYY-MM-DD")
     }
+    console.log("date out: " + out)
+    return out
   
   }
   function isValidDate(d) {

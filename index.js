@@ -86,6 +86,9 @@ const crawlerConfig = {
 
 
 async function main(){
+  if(process.argv[2] == undefined){
+    return;
+  }
   
   const debugMode = false;
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
@@ -93,15 +96,10 @@ async function main(){
   let targetDate = new Date("2021. 05. 20");
   let endDate = new Date("2019. 12 .01");
   while(targetDate > endDate){
-    await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverCafe"], targetDate)
+    await chromeHandler.automaticChromeHandler(browser, crawlerConfig[process.argv[2]], targetDate)
     .then(targetDate = new Date(targetDate.setDate(targetDate.getDate() - 1)))
     console.log("naver cafe done")
   }
-  // let crawledData = 
-  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumCafe"], targetDate)
-  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["naverBlog"], targetDate)
-  // crawledData = await chromeHandler.automaticChromeHandler(browser, crawlerConfig["daumBlog"], targetDate)
-
   await browser.close();
 }
 

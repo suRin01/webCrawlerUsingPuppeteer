@@ -4,7 +4,7 @@
   "description": "web crawler based on nodejs using puppeteer library",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js naverCafe"
   },
   "repository": {
     "type": "git",

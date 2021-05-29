@@ -18,6 +18,9 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
                 + JSONconfig["searchPageTargetDateEnd"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormatEnd"])
         console.log(`go to ${targetDateSearchPage}`)
         await page.goto(targetDateSearchPage, { waitUntil: 'networkidle0' })
+        .catch(e=>{
+            console.log(e);
+        })
         let data = await htmlHandler.getUrlsOnSearchPage(page, JSONconfig["searchPagePostURLSelector"], JSONconfig["source"])
         currentPageItemCount = data.length
     
