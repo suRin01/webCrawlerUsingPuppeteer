@@ -93,7 +93,7 @@ async function main(){
   const debugMode = false;
   const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
 
-  let targetDate = new Date("2021. 05. 20");
+  let targetDate = new Date("2021. 05. 29");
   let endDate = new Date("2019. 12 .01");
   while(targetDate > endDate){
     await chromeHandler.automaticChromeHandler(browser, crawlerConfig[process.argv[2]], targetDate)

@@ -5,8 +5,8 @@ function dateNormalization(unnormalizedDate){
     if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D. H:m'))){
       out = dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D. H:m'), "YYYY-MM-DD")
     }
-    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD H:m'))){
-      out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY.MM.DD H:m'), "YYYY-MM-DD")
+    else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YY.MM.DD H:m'))){
+      out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YY.MM.DD H:m'), "YYYY-MM-DD")
     }
     else if(isValidDate(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D.'))){
       out =  dateFormatParse.format(dateFormatParse.parse(unnormalizedDate, 'YYYY. M. D.'), "YYYY-MM-DD")
