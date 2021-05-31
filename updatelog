@@ -1,7 +1,0 @@
-0519 update ->  mariadb install, setup firewall and searched database configure, database designe
-0520 update ->  install sequelize, 
-0521 update ->  search result show only < 1000 cases, set date range to collect all data
-                need to make page list based on per day, have some trouble with naver blog search page
-                when get search page over maximum page, return random post on seaerch page
-0524 update ->  make utils.js, function validating date and normalizing date string to date object
-0528 run crawaler

@@ -11,7 +11,7 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
     // pipe page's console data to terminal
     // page.on('console', consoleObj => console.log(consoleObj.text()));
 
-    while((previousPageItemCount==currentPageItemCount) || (previousPageItemCount == -1)){
+    while((previousPageItemCount==currentPageItemCount) || (previousPageItemCount === -1)){
         previousPageItemCount = currentPageItemCount;
         let targetDateSearchPage = JSONconfig["searchPageBaseURL"] + pageNum  
                 + JSONconfig["searchPageTargetDateStart"] + dateFormatParse.format(targetDate, JSONconfig["searchDateFormatStart"])
@@ -29,7 +29,7 @@ async function automaticChromeHandler(browser, JSONconfig, targetDate) {
             console.log(`go to ${data[idx]["herf"]}`)
             await page.goto(data[idx]["herf"], { waitUntil: 'networkidle0' })
             let frame;
-            if (JSONconfig["innerIframeId"] != "") {
+            if (JSONconfig["innerIframeId"] !== "") {
                 frame = page.frames().find(frame => frame.name() === JSONconfig["innerIframeId"])
             }
             else {

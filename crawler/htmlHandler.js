@@ -4,15 +4,14 @@ async function postContentsParser(page, selectorData) {
     return {};
   }
 
-  try {
-    await page.click("a.btn_comment ");
+    await page.click("a.btn_comment ")
+    .catch(()=>{})
+
     await page
       .waitForSelector(selectorData.comment, { timeout: 5000 })
       .catch(() => {
         console.log("No comments")
       })
-
-  } catch { }
 
 
   let data = await page.evaluate((selectorData) => {
@@ -69,7 +68,7 @@ async function getUrlsOnSearchPage(onPage, elementSelector, postSource) {
   if(onPage == undefined){
     return [];
   }
-  
+
   return await onPage.evaluate((elementSelector, postSource) => {
     let scrappedData = [];
     // const detailAreas = document.querySelectorAll("a.item_subject")
@@ -88,3 +87,17 @@ async function getUrlsOnSearchPage(onPage, elementSelector, postSource) {
 
 module.exports.getUrlsOnSearchPage = getUrlsOnSearchPage;
 module.exports.postContentsParser = postContentsParser;
+
+// this 함수에서 this가 다르다
+// const test = function(){};
+// const arrow = () => {};
+// = / == / === 차이점 ===으로 바꾸기.
+
+
+// 어떤 경로든 url 접근 -> selectr inject -> 원하는 값 크롤링. => UTIL FUNCTION
+
+
+// CLOUD = 100
+// aws 아마존 웹 서비스 / gcp 구글 클라우드 페어 
+// aws ec2 * 200 - 크롤러 배포.-> 서버  가상머신  
+// VPN= 냬 IP를 조작하겠다.

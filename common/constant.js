@@ -1,7 +1,11 @@
-const puppeteer = require('puppeteer');
-const chromeHandler = require("./headlessChromeHandler")
-const crawlerConfig = {
-  naverCafe:{
+function define(name, value) {
+    Object.defineProperty(exports, name, {
+        value:      value,
+        enumerable: true
+    });
+}
+
+  define("naverCafe", {
     source: "naverCafe",
     searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=1&pr=7&p=",
     searchPageTargetDateStart: "&ps=",
@@ -20,8 +24,9 @@ const crawlerConfig = {
       comment: "span.text_comment",
       unnecessaryElements: []
     }
-  },
-  naverBlog: {
+  });
+
+  define("naverBlog", {
     source: "naverBlog",
     searchPageBaseURL: "https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
     searchPageTargetDateStart: "&startDate=",
@@ -40,8 +45,8 @@ const crawlerConfig = {
       comment: "span.u_cbox_contents, div.u_cbox_text_wrap",
       unnecessaryElements: []
     }
-  },
-  daumCafe: {
+  });
+  define("daumCafe", {
     source: "daumCafe",
     searchPageBaseURL: "http://search.daum.net/search?w=cafe&DA=STC&m=board&q=%EC%BD%94%EB%A1%9C%EB%82%98&find=off&sort=timely&lpp=10&period=u&ccl_derivative=&ccl_commercial=&p=",
     searchPageTargetDateStart: "&sd=",
@@ -60,8 +65,8 @@ const crawlerConfig = {
       comment: "div.comment_post > div.box_post",
       unnecessaryElements: []
     }
-  },
-  daumBlog: {
+  });
+  define("daumBlog", {
     source: "daumBlog",
     searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&period=u&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
     searchPageTargetDateStart: "&sd=",
@@ -80,34 +85,4 @@ const crawlerConfig = {
       comment: "div.comment_post > div.box_post, p.text, div.cont, span.text_reply",
       unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
     }
-  }
-}
-
-
-
-async function main(){
-  if(process.argv[2] == undefined){
-    return;
-  }
-  
-  const debugMode = false;
-  const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
-
-<<<<<<< Updated upstream
-  let targetDate = new Date("2021. 05. 29");
-=======
-  let targetDate = new Date("2021. 05. 14");
->>>>>>> Stashed changes
-  let endDate = new Date("2019. 12 .01");
-  while(targetDate > endDate){
-    await chromeHandler.automaticChromeHandler(browser, crawlerConfig[process.argv[2]], targetDate)
-    .then(targetDate = new Date(targetDate.setDate(targetDate.getDate() - 1)))
-    .catch
-    console.log("naver cafe done")
-  }
-  await browser.close();
-}
-
-main();
-
-// main은 그냥 제일 가벼워야합니다. 진입점
+  });
