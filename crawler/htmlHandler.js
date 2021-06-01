@@ -1,9 +1,8 @@
-const utils = require("./utils")
+const utils = require("../util/utils")
 async function postContentsParser(page, selectorData) {
   if(page == undefined){
     return {};
   }
-
     await page.click("a.btn_comment ")
     .catch(()=>{})
 
@@ -100,4 +99,4 @@ module.exports.postContentsParser = postContentsParser;
 // CLOUD = 100
 // aws 아마존 웹 서비스 / gcp 구글 클라우드 페어 
 // aws ec2 * 200 - 크롤러 배포.-> 서버  가상머신  
-// VPN= 냬 IP를 조작하겠다.
+// VPN= 냬 IP를 조작하겠다. 

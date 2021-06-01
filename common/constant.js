@@ -4,6 +4,23 @@ function define(name, value) {
         enumerable: true
     });
 }
+  define("strings", {
+    baseURL: "searchPageBaseURL",
+    dateStart: "searchPageTargetDateStart",
+    dateEnd: "searchPageTargetDateEnd",
+    dateStartPattern: "searchDateFormatStart",
+    dateEndPattern: "searchDateFormatEnd",
+    urlSelector: "searchPagePostURLSelector",
+    iframeId: "innerIframeId",
+    contentSelector: "postSelectorData",
+    titleSelector: "title",
+    dateSelector: "articleUploadDate",
+    authorSelector: "articleAuthor",
+    mainTextSelector: "mainText",
+    commentSelector: "comment",
+    unnecessarySelector: "unnecessaryElements"
+  })
+
 
   define("naverCafe", {
     source: "naverCafe",
