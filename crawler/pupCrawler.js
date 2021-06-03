@@ -11,7 +11,7 @@ class crawler {
 
   }
 
-  setup(startDate, endDate) {
+  setDuration(startDate, endDate) {
     this.startDate = startDate
     this.endDate = endDate
   }
@@ -72,7 +72,7 @@ class crawler {
 
 
       }
-      db.putData(data)
+      // require("../util/db").put(data)
 
       pageNum += 1;
     }
@@ -97,69 +97,61 @@ class crawler {
       for (const key in selectorData) {
         if (Object.hasOwnProperty.call(selectorData, key)) {
           const element = selectorData[key];
-          console.log(element)
           let stripTarget = document.querySelector(element)
           if (stripTarget != null) {
             stripTarget.parentNode.removeChild(stripTarget);
           }
-
-
-
         }
       }
+      let actualPostData = {};
       for (const key in removeData) {
         if (Object.hasOwnProperty.call(removeData, key)) {
           const element = removeData[key];
           console.log(element)
-
-
-
-
+          let data = document.querySelectorAll(element);
+          if(data !== undefined){
+            actualPostData[key] = data
+          }
         }
       }
 
 
 
+      // //strip unnecessary elements
+      // for (let idx = 0, len = selectorData["unnecessaryElements"].length; idx < len; idx++) {
+      //   let stripTarget = document.querySelector(selectorData["unnecessaryElements"][idx])
+      //   if (stripTarget != null) {
+      //     stripTarget.parentNode.removeChild(stripTarget);
+      //   }
+      // }
+      // let actualPostData = {};
 
+      // let title = document.querySelector(selectorData.title)
+      // if (title != undefined) {
+      //   actualPostData["title"] = title.innerText
+      // }
 
+      // let articleUploadDate = document.querySelector(selectorData.articleUploadDate)
+      // if (articleUploadDate != undefined) {
+      //   actualPostData["articleUploadDate"] = articleUploadDate.innerText
+      // }
 
+      // let articleAuthor = document.querySelector(selectorData.articleAuthor)
+      // if (articleAuthor != undefined) {
+      //   actualPostData["articleAuthor"] = articleAuthor.innerText
+      // }
 
+      // let mainText = document.querySelector(selectorData.mainText)
+      // if (mainText != undefined) {
+      //   actualPostData["mainText"] = mainText.innerText
+      // }
 
-      //strip unnecessary elements
-      for (let idx = 0, len = selectorData["unnecessaryElements"].length; idx < len; idx++) {
-        let stripTarget = document.querySelector(selectorData["unnecessaryElements"][idx])
-        if (stripTarget != null) {
-          stripTarget.parentNode.removeChild(stripTarget);
-        }
-      }
-      let actualPostData = {};
-
-      let title = document.querySelector(selectorData.title)
-      if (title != undefined) {
-        actualPostData["title"] = title.innerText
-      }
-
-      let articleUploadDate = document.querySelector(selectorData.articleUploadDate)
-      if (articleUploadDate != undefined) {
-        actualPostData["articleUploadDate"] = articleUploadDate.innerText
-      }
-
-      let articleAuthor = document.querySelector(selectorData.articleAuthor)
-      if (articleAuthor != undefined) {
-        actualPostData["articleAuthor"] = articleAuthor.innerText
-      }
-
-      let mainText = document.querySelector(selectorData.mainText)
-      if (mainText != undefined) {
-        actualPostData["mainText"] = mainText.innerText
-      }
-
-      let comments = document.querySelectorAll(selectorData.comment);
-      actualPostData["comments"] = [];
-      for (let idx = 0, len = comments.length; idx < len; idx++) {
-        console.log("    " + comments[idx].innerText)
-        actualPostData["comments"][idx] = comments[idx].innerText;
-      }
+      // let comments = document.querySelectorAll(selectorData.comment);
+      // actualPostData["comments"] = [];
+      // for (let idx = 0, len = comments.length; idx < len; idx++) {
+      //   console.log("    " + comments[idx].innerText)
+      //   actualPostData["comments"][idx] = comments[idx].innerText;
+      // }
 
 
       return actualPostData;
