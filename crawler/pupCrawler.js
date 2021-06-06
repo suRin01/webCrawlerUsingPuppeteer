@@ -7,8 +7,13 @@ class crawler {
   constructor(target, debugMode) {
     this.target = target
     this.config = require("../common/constant")[this.target]
-    this.browser = require("puppeteer").launch(Option = { headless: !debugMode, devtools: debugMode, defaultViewport: null });
+    this.puppeteer = require('puppeteer');
+    this.browser = this.puppeteer.launch({ headless: !debugMode, devtools: debugMode, defaultViewport: null });
 
+  }
+
+  test(){
+    console.log("hi")
   }
 
   setDuration(startDate, endDate) {
@@ -175,3 +180,6 @@ class crawler {
 
 
 }
+
+
+module.exports = crawler;
