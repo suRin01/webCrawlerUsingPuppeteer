@@ -4,6 +4,29 @@ function define(name, value) {
         enumerable: true
     });
 }
+
+// Json sample
+const naver_cafe = {
+    source: "naverCafe",
+    searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=1&pr=7&p=",
+    searchPageTargetDateStart: "&ps=",
+    //ps=2021.05.01
+    searchPageTargetDateEnd: "&pe=",
+    //pe=2021.05.01
+    searchDateFormatStart: "YYYY.MM.DD",
+    searchDateFormatEnd: "YYYY.MM.DD",
+    searchPagePostURLSelector: "a.item_subject",
+    innerIframeId:"cafe_main",
+    postSelectorData: {
+      title: "h3.title_text",
+      articleUploadDate: "div.article_info > span.date",
+      articleAuthor: "div.profile_info > div.nick_box > a.nickname",
+      mainText: "div.se-main-container, div.ContentRenderer",
+      comment: "span.text_comment",
+      unnecessaryElements: []
+    }
+};
+
   define("strings", {
     baseURL: "searchPageBaseURL",
     dateStart: "searchPageTargetDateStart",
