@@ -15,12 +15,12 @@ async function main(){
   while(targetDate > endDate){
     await chromeHandler.automaticChromeHandler(browser, crawlerConfig[process.argv[2]], targetDate)
     .then(targetDate = new Date(targetDate.setDate(targetDate.getDate() - 1)))
-    .catch
-    console.log("naver cafe done")
+    .catch((err)=>{
+      console.log(err);
+    });
+    console.log("naver cafe done");
   }
   await browser.close();
 }
 
 main();
-
-// main은 그냥 제일 가벼워야합니다. 진입점
