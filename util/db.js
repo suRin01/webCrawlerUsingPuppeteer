@@ -16,24 +16,24 @@ async function put(data){
 
 }
 
-function asyncPutComment(conn, params){
-  let sql = "INSERT INTO comments ( post_id, comment ) VALUES(?, ?);"
-  conn.query(sql, params)
-  .catch(e=>{
-    console.log(e)
-  })
-}
 
 function asyncPutData(conn, params){
   let sql = "INSERT INTO data ( source, source_url, title, author, date, main_text) VALUES(?, ?, ?, ?, ?, ?);"
   conn.query(sql, [params.source, params.herf, params.postData.title, params.postData.articleAuthor, params.postData.articleUploadDate, params.postData.mainText])
   .then(([rows, fields])=>{
-    console.log(rows.insertId)
+    console.log("Data added")
     // on insert success: field === undefined
     for(let idx = 0, len = params.postData.comments.length; idx <len; idx++){
       asyncPutComment(conn, [rows.insertId, params.postData.comments[idx]])
     }
   })
+  .catch(e=>{
+    console.log(e)
+  })
+}
+function asyncPutComment(conn, params){
+  let sql = "INSERT INTO comments ( post_id, comment ) VALUES(?, ?);"
+  conn.query(sql, params)
   .catch(e=>{
     console.log(e)
   })

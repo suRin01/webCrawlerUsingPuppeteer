@@ -1,4 +1,4 @@
-const crawler = require("../crawler/pupCrawler")
+const crawler = require("./crawler/pupCrawler")
 function main(){
   if(process.argv[2] == undefined){
     return;
