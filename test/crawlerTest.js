@@ -1,11 +1,9 @@
 const crawler = require("../crawler/pupCrawler")
 
-let cw = new crawler("naverCafe", false);
-cw.setDuration(new Date(), new Date("2019. 12. 01"));
+crawler.setTarget("naverCafe")
+crawler.setDuration(new Date(), new Date("2019. 12. 01"));
 
-cw.start();
-
-
+crawler.start();
 
 // const cw = new crawler("naverCafe", false)
 

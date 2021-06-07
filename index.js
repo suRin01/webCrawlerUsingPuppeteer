@@ -1,26 +1,14 @@
-const puppeteer = require('puppeteer');
-const chromeHandler = require("./headlessChromeHandler")
-
-
-async function main(){
+const crawler = require("../crawler/pupCrawler")
+function main(){
   if(process.argv[2] == undefined){
     return;
   }
-  
-  const debugMode = false;
-  const browser = await puppeteer.launch(Option = { headless: !debugMode, devtools: debugMode , defaultViewport: null});
 
-  let targetDate = new Date("2021. 05. 29");
-  let endDate = new Date("2019. 12 .01");
-  while(targetDate > endDate){
-    await chromeHandler.automaticChromeHandler(browser, crawlerConfig[process.argv[2]], targetDate)
-    .then(targetDate = new Date(targetDate.setDate(targetDate.getDate() - 1)))
-    .catch((err)=>{
-      console.log(err);
-    });
-    console.log("naver cafe done");
-  }
-  await browser.close();
+  crawler.setTarget(process.argv[2])
+  crawler.setDuration(new Date(), new Date("2019. 12. 01"));
+  
+  crawler.start();
+  
 }
 
 main();
