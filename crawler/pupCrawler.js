@@ -49,7 +49,6 @@ async function start(debugMode = false) {
       }
     let targetUrlList = [];
     targetUrlList = await querySelectedAllData(page, selector.searchPagePostURLSelector, strings.elementInnerContentType.link);
-    // console.log(targetUrlList);
 
     //이전 페이지 검색 결과와 같은게 있음-> 마지막 페이지 이상의 데이터 긁을때
     let unmergedUrlListCount = previousTargetUrlList.length + targetUrlList.length;
