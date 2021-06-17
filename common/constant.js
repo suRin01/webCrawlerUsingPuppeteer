@@ -4,17 +4,17 @@ function define(name, value) {
         enumerable: true
     });
 }
-  define("strings", {
+define("strings", {
     waitUntil: "networkidle0",
     elementInnerContentType:{
-      link: "href",
-      text: "innerText"
+        link: "href",
+        text: "innerText"
     },
     
-  })
+});
 
 
-  define("naverCafe", {
+define("naverCafe", {
     source: "naverCafe",
     searchPageBaseURL: "https://cafe.naver.com/ca-fe/home/search/articles?q=%EC%BD%94%EB%A1%9C%EB%82%98&od=1&pr=7&p=",
     searchPageTargetDateStart: "&ps=",
@@ -26,16 +26,16 @@ function define(name, value) {
     searchPagePostURLSelector: "a.item_subject",
     innerIframeId:"cafe_main",
     postSelectorData: {
-      title: "h3.title_text",
-      articleUploadDate: "div.article_info > span.date",
-      articleAuthor: "div.profile_info > div.nick_box > a.nickname",
-      mainText: "div.se-main-container, div.ContentRenderer",
-      comment: "span.text_comment",
-      unnecessaryElements: []
+        title: "h3.title_text",
+        articleUploadDate: "div.article_info > span.date",
+        articleAuthor: "div.profile_info > div.nick_box > a.nickname",
+        mainText: "div.se-main-container, div.ContentRenderer",
+        comment: "span.text_comment",
+        unnecessaryElements: []
     }
-  });
+});
 
-  define("naverBlog", {
+define("naverBlog", {
     source: "naverBlog",
     searchPageBaseURL: "https://section.blog.naver.com/Search/Post.nhn?rangeType=ALL&orderBy=recentdate&keyword=%EC%BD%94%EB%A1%9C%EB%82%98&pageNo=",
     searchPageTargetDateStart: "&startDate=",
@@ -47,15 +47,15 @@ function define(name, value) {
     searchPagePostURLSelector: "a.desc_inner",
     innerIframeId: "mainFrame",
     postSelectorData: {
-      title: "[class*=se-ff-][class*=se-fs-] , div.htitle > span",
-      articleUploadDate: ".se_publishDate.pcol2, p._postAddDate",
-      articleAuthor: ".link.pcol2, div.nick > strong",
-      mainText: "div.se-main-container, div#postViewArea",
-      comment: "span.u_cbox_contents, div.u_cbox_text_wrap",
-      unnecessaryElements: []
+        title: "[class*=se-ff-][class*=se-fs-] , div.htitle > span",
+        articleUploadDate: ".se_publishDate.pcol2, p._postAddDate",
+        articleAuthor: ".link.pcol2, div.nick > strong",
+        mainText: "div.se-main-container, div#postViewArea",
+        comment: "span.u_cbox_contents, div.u_cbox_text_wrap",
+        unnecessaryElements: []
     }
-  });
-  define("daumCafe", {
+});
+define("daumCafe", {
     source: "daumCafe",
     searchPageBaseURL: "http://search.daum.net/search?w=cafe&DA=STC&m=board&q=%EC%BD%94%EB%A1%9C%EB%82%98&find=off&sort=timely&lpp=10&period=u&ccl_derivative=&ccl_commercial=&p=",
     searchPageTargetDateStart: "&sd=",
@@ -67,15 +67,15 @@ function define(name, value) {
     searchPagePostURLSelector: "a.f_link_b",
     innerIframeId: "down",
     postSelectorData: {
-      title: "strong.tit_info", 
-      articleUploadDate: "div.cover_info > span:nth-child(4)",
-      articleAuthor: "div.cover_info > a:nth-child(1)",
-      mainText: "div#user_contents",
-      comment: "div.comment_post > div.box_post",
-      unnecessaryElements: []
+        title: "strong.tit_info", 
+        articleUploadDate: "div.cover_info > span:nth-child(4)",
+        articleAuthor: "div.cover_info > a:nth-child(1)",
+        mainText: "div#user_contents",
+        comment: "div.comment_post > div.box_post",
+        unnecessaryElements: []
     }
-  });
-  define("daumBlog", {
+});
+define("daumBlog", {
     source: "daumBlog",
     searchPageBaseURL: "https://search.daum.net/search?w=blog&f=section&SA=daumsec&lpp=10&nil_src=blog&period=u&q=%EC%BD%94%EB%A1%9C%EB%82%98&sort=timely&DA=STC&page=",
     searchPageTargetDateStart: "&sd=",
@@ -87,11 +87,11 @@ function define(name, value) {
     searchPagePostURLSelector: "a.f_link_b",
     innerIframeId: "",
     postSelectorData: {
-      title: "h2.title-article, strong.cB_Title.cB_TitleImage",
-      articleUploadDate: "div.box-info > p.date, span.cB_Tdate",
-      articleAuthor: "strong.name",
-      mainText: "div.tt_article_useless_p_margin, div.cContentBody",
-      comment: "div.comment_post > div.box_post, p.text, div.cont, span.text_reply",
-      unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
+        title: "h2.title-article, strong.cB_Title.cB_TitleImage",
+        articleUploadDate: "div.box-info > p.date, span.cB_Tdate",
+        articleAuthor: "strong.name",
+        mainText: "div.tt_article_useless_p_margin, div.cContentBody",
+        comment: "div.comment_post > div.box_post, p.text, div.cont, span.text_reply",
+        unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
     }
-  });
+});
