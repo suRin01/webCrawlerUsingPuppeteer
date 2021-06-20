@@ -1,11 +1,10 @@
-const crawler = require("./crawler/pupCrawler");
+const crawler = require("./crawler/core");
 function main(){
-    if(process.argv[2] == undefined){
+    if(process.argv[2] === undefined){
         return;
     }
 
-    crawler.setTarget(process.argv[2]);
-    crawler.setDuration(new Date(), new Date("2019. 12. 01"));
+    crawler.init(process.argv[2], new Date(), new Date("2019. 12. 01"));
   
     crawler.start();
   

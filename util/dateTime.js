@@ -1,5 +1,5 @@
 const dateFormatParse = require("date-format-parse");
-function dateNormalization(unnormalizedDate) {
+function normalization(unnormalizedDate) {
     console.log("date in:  " + unnormalizedDate);
     let out;
     if (isValidDate(dateFormatParse.parse(unnormalizedDate, "YYYY. M. D. H:m"))) {
@@ -38,5 +38,5 @@ function isValidDate(d) {
 }
 
 
-module.exports.dateNormalization = dateNormalization;
+module.exports.normalization = normalization;
 module.exports.format = format;

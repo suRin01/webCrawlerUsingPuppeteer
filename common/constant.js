@@ -10,6 +10,7 @@ define("strings", {
         link: "href",
         text: "innerText"
     },
+    commentTage: "a.btn_comment"
     
 });
 
