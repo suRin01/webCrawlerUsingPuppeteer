@@ -1,6 +1,6 @@
-const puppeteer = require("puppeter");
+const puppeteer = require("puppeteer");
 const crawler = require("../util/crawler");
-const strings = require("../common/constant");
+const constants = require("../common/constant");
 const dateTime = require("../util/dateTime");
 const db = require("../util/db");
 
@@ -23,24 +23,16 @@ async function start() {
         let pageNum = 1;
         // eslint-disable-next-line no-constant-condition
         while (true) {
-            const searchPageUrl = strings[target].searchPageBaseURL + pageNum
-                + strings[target].searchPageTargetDateStart + dateTime.format(targetDate, strings[target].searchDateFormatStart)
-                + strings[target].searchPageTargetDateEnd + dateTime.format(targetDate, strings[target].searchDateFormatEnd);
+            const searchPageUrl = constants[target].searchPageBaseURL + pageNum
+                + constants[target].searchPageTargetDateStart + dateTime.format(targetDate, constants[target].searchDateFormatStart)
+                + constants[target].searchPageTargetDateEnd + dateTime.format(targetDate, constants[target].searchDateFormatEnd);
 
             console.log(`move to ${searchPageUrl}`);
             // eslint-disable-next-line no-await-in-loop
-            const result = await page.goto(searchPageUrl, { waitUntil: strings.waitUntil })
-                .then(() => 0)
-                .catch((e) => {
-                    console.log(e);
-                    return undefined;
-                });
-            if (result === undefined) {
-                console.log("Page is not responding currently");
-                continue;
-            }
+            page = await goto(page,searchPageUrl);
+
             let targetUrlList = [];
-            targetUrlList = await crawler.querySelectedAllData(page, strings[target].searchPagePostURLSelector, strings.elementInnerContentType.link);
+            targetUrlList = await crawler.querySelectedAllData(page, constants[target].searchPagePostURLSelector, constants.strings.elementInnerContentType.link);
 
             // 이전 페이지 검색 결과와 같은게 있음-> 마지막 페이지 이상의 데이터 긁을때
             const unmergedUrlListCount = previousTargetUrlList.length + targetUrlList.length;
@@ -50,18 +42,20 @@ async function start() {
                 break;
             }
 
+
             const crawledDataArray = [];
 
             for (let idx = 0, len = targetUrlList.length; idx < len; idx += 1) {
                 console.log(`move to ${targetUrlList[idx]}`);
-                page = goto(page,targetUrlList[idx]);
+                page = await goto(page,targetUrlList[idx]);
 
-                page = paging(page, target);
+                let tempPage = await paging(page, target);
                                 
-                let parsedData = parser(page, target);
+                let parsedData = await parser(tempPage, target);
                 
-                crawledDataArray.push(db.dbDataConstructor(strings[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
+                crawledDataArray.push(db.dbDataConstructor(constants[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
                 // crawledDataArray.push(db.dbDataConstructor(strings[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
+                
                 
             }
 
@@ -83,8 +77,11 @@ async function start() {
 
 
 async function goto(page, url){
-    return await page.goto(url, { waitUntil: strings.waitUntil })
-        .then(() => 0)
+    return await page.goto(url, { waitUntil: constants.strings.waitUntil })
+        .then(()=>{
+            console.log("moved");
+            return page;
+        })
         .catch((e) => {
             console.log(e);
             return undefined;
@@ -94,9 +91,9 @@ async function goto(page, url){
 async function paging(page, target){
     // go to innerFrame
     let targetFrame;
-    if (strings[target].innerIframeId !== "") {
-        console.log(`Find innerFrame, name: ${strings[target].innerIframeId}`);
-        targetFrame = page.frames().find((frame) => frame.name() === strings[target].innerIframeId);
+    if (constants[target].innerIframeId !== "") {
+        console.log(`Find innerFrame, name: ${constants[target].innerIframeId}`);
+        targetFrame = page.frames().find((frame) => frame.name() === constants[target].innerIframeId);
     } else {
         targetFrame = page;
     }
@@ -104,7 +101,7 @@ async function paging(page, target){
     try{
         await targetFrame.click("a.btn_comment"); 
         await targetFrame
-            .waitForSelector(strings[target].postSelectorData.comment, {timeout: 3000})
+            .waitForSelector(constants[target].postSelectorData.comment, {timeout: 3000})
             .catch(()=>{
                 console.log("No comments");
             });
@@ -117,11 +114,11 @@ async function paging(page, target){
 }
 
 async function parser(page, target){
-    const title = await crawler.querySelectedData(page, strings[target].postSelectorData.title, strings.elementInnerContentType.text);
-    const articleUploadDate = dateTime.normalization(await crawler.querySelectedData(page, strings[target].postSelectorData.articleUploadDate, strings.elementInnerContentType.text));
-    const articleAuthor = await crawler.querySelectedData(page, strings[target].postSelectorData.articleAuthor, strings.elementInnerContentType.text);
-    const mainText = await crawler.querySelectedData(page, strings[target].postSelectorData.mainText, strings.elementInnerContentType.text, strings[target].postSelectorData.unnecessaryElements);
-    const comment = await crawler.querySelectedAllData(page, strings[target].postSelectorData.comment, strings.elementInnerContentType.text);
+    const title = await crawler.querySelectedData(page, constants[target].postSelectorData.title, constants.strings.elementInnerContentType.text);
+    const articleUploadDate = dateTime.normalization(await crawler.querySelectedData(page, constants[target].postSelectorData.articleUploadDate, constants.strings.elementInnerContentType.text));
+    const articleAuthor = await crawler.querySelectedData(page, constants[target].postSelectorData.articleAuthor, constants.strings.elementInnerContentType.text);
+    const mainText = await crawler.querySelectedData(page, constants[target].postSelectorData.mainText, constants.strings.elementInnerContentType.text, constants[target].postSelectorData.unnecessaryElements);
+    const comment = await crawler.querySelectedAllData(page, constants[target].postSelectorData.comment, constants.strings.elementInnerContentType.text);
 
     return {title, articleUploadDate,articleAuthor, mainText, comment};
 }

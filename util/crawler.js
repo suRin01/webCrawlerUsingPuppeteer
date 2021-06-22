@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-async function querySelectedData(page, selector, type, unnecessarySelector = undefined) {
+async function querySelectedData(page, selector, type, unnecessarySelector=undefined) {
     const data = await page.evaluate((selector, type, unnecessarySelector) => {
     // remove unwanted elements
         if (unnecessarySelector !== undefined) {
