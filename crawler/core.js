@@ -26,9 +26,6 @@ async function start() {
             const searchPageUrl = constants[target].searchPageBaseURL + pageNum
                 + constants[target].searchPageTargetDateStart + dateTime.format(targetDate, constants[target].searchDateFormatStart)
                 + constants[target].searchPageTargetDateEnd + dateTime.format(targetDate, constants[target].searchDateFormatEnd);
-
-            console.log(`move to ${searchPageUrl}`);
-            // eslint-disable-next-line no-await-in-loop
             page = await goto(page,searchPageUrl);
 
             let targetUrlList = [];
@@ -44,22 +41,13 @@ async function start() {
 
 
             const crawledDataArray = [];
-
             for (let idx = 0, len = targetUrlList.length; idx < len; idx += 1) {
-                console.log(`move to ${targetUrlList[idx]}`);
                 page = await goto(page,targetUrlList[idx]);
-
                 let tempPage = await paging(page, target);
-                                
                 let parsedData = await parser(tempPage, target);
-                
                 crawledDataArray.push(db.dbDataConstructor(constants[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
-                // crawledDataArray.push(db.dbDataConstructor(strings[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
-                
-                
             }
-
-            // db.put(crawledDataArray);
+            db.put(crawledDataArray);
             previousTargetUrlList = targetUrlList;
             pageNum += 1;
         }
@@ -68,18 +56,10 @@ async function start() {
 }
 
 
-
-
-
-
-
-
-
-
 async function goto(page, url){
     return await page.goto(url, { waitUntil: constants.strings.waitUntil })
         .then(()=>{
-            console.log("moved");
+            console.log(`move to ${url}`);
             return page;
         })
         .catch((e) => {
@@ -123,13 +103,5 @@ async function parser(page, target){
     return {title, articleUploadDate,articleAuthor, mainText, comment};
 }
 
-async function close(page){
-    page.close();
-}
-
 module.exports.init = init;
-module.exports.goto = goto;
-module.exports.paging = paging;
-module.exports.parser = parser;
 module.exports.start = start;
-module.exports.close = close;
