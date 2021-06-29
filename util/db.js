@@ -1,6 +1,6 @@
 let mysql = require("mysql2/promise");
-const query = require("../common/constant").SqlQueryString;
-async function insert(data){
+
+async function put(data){
     require("dotenv").config();
     let conn = await mysql.createConnection({
         host     : process.env.DB_HOST,
@@ -11,27 +11,29 @@ async function insert(data){
     });
 
     for(let idx=0, len=data.length; idx<len; idx++){
-        asyncInsertData(conn, data[idx]);
+        asyncPutData(conn, data[idx]);
     }
 
 }
 
 
-function asyncInsertData(conn, params){
-    conn.query(query.insertData, [params.source, params.herf, params.postData.title, params.postData.articleAuthor, params.postData.articleUploadDate, params.postData.mainText])
+function asyncPutData(conn, params){
+    let sql = "INSERT INTO data ( source, source_url, title, author, date, main_text) VALUES(?, ?, ?, ?, ?, ?);";
+    conn.query(sql, [params.source, params.herf, params.postData.title, params.postData.articleAuthor, params.postData.articleUploadDate, params.postData.mainText])
         .then(([rows])=>{
             console.log("Data added");
             // on insert success: field === undefined
             for(let idx = 0, len = params.postData.comments.length; idx <len; idx++){
-                asyncInsertComment(conn, [rows.insertId, params.postData.comments[idx]]);
+                asyncPutComment(conn, [rows.insertId, params.postData.comments[idx]]);
             }
         })
         .catch(e=>{
             console.log(e);
         });
 }
-function asyncInsertComment(conn, params){
-    conn.query(query.insertComment, params)
+function asyncPutComment(conn, params){
+    let sql = "INSERT INTO comments ( post_id, comment ) VALUES(?, ?);";
+    conn.query(sql, params)
         .catch(e=>{
             console.log(e);
         });
@@ -54,5 +56,5 @@ function dbDataConstructor(source, href, title, articleUploadDate, articleAuthor
 }
 
 
-module.exports.insert = insert;
+module.exports.put = put;
 module.exports.dbDataConstructor = dbDataConstructor;

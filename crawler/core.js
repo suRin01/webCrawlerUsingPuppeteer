@@ -16,28 +16,25 @@ async function init(_target, _startDate, _endDate, debugMode=false){
     endDate = _endDate;
 }
 
-
 async function start() {
     let page = await browser.newPage();
     let previousTargetUrlList = [];
-    const urlPreset = constants[target];
     while (targetDate > endDate) {
         let pageNum = 1;
         // eslint-disable-next-line no-constant-condition
         while (true) {
-            const searchPageUrl = urlPreset.searchPageBaseURL + pageNum
-                + urlPreset.searchPageTargetDateStart + dateTime.format(targetDate, urlPreset.searchDateFormatStart)
-                + urlPreset.searchPageTargetDateEnd + dateTime.format(targetDate, urlPreset.searchDateFormatEnd);
+            const searchPageUrl = constants[target].searchPageBaseURL + pageNum
+                + constants[target].searchPageTargetDateStart + dateTime.format(targetDate, constants[target].searchDateFormatStart)
+                + constants[target].searchPageTargetDateEnd + dateTime.format(targetDate, constants[target].searchDateFormatEnd);
             page = await goto(page,searchPageUrl);
 
-            let targetUrlList = await crawler.querySelectedAllData(page, urlPreset.searchPagePostURLSelector, constants.strings.elementInnerContentType.link);
+            let targetUrlList = [];
+            targetUrlList = await crawler.querySelectedAllData(page, constants[target].searchPagePostURLSelector, constants.strings.elementInnerContentType.link);
 
             // 이전 페이지 검색 결과와 같은게 있음-> 마지막 페이지 이상의 데이터 긁을때
-            const UndeduplicatedUrlListCount = previousTargetUrlList.length + targetUrlList.length;
-            const UndeduplicatedUrlList = new Set(previousTargetUrlList.concat(targetUrlList));
-
-            // Array.prototype.push.apply(previousTargetUrlList, targetUrlList);
-            if (UndeduplicatedUrlList.size !== UndeduplicatedUrlListCount) {
+            const unmergedUrlListCount = previousTargetUrlList.length + targetUrlList.length;
+            Array.prototype.push.apply(previousTargetUrlList, targetUrlList);
+            if ((new Set(previousTargetUrlList)).size !== unmergedUrlListCount) {
                 console.log("마지막 페이지 였습니다.");
                 break;
             }
@@ -48,9 +45,9 @@ async function start() {
                 page = await goto(page,targetUrlList[idx]);
                 let tempPage = await paging(page, target);
                 let parsedData = await parser(tempPage, target);
-                crawledDataArray.push(db.dbDataConstructor(urlPreset.source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
+                crawledDataArray.push(db.dbDataConstructor(constants[target].source, targetUrlList[idx], parsedData.title, parsedData.articleUploadDate, parsedData.articleAuthor, parsedData.mainText, parsedData.comment));
             }
-            db.insert(crawledDataArray);
+            db.put(crawledDataArray);
             previousTargetUrlList = targetUrlList;
             pageNum += 1;
         }
@@ -72,12 +69,11 @@ async function goto(page, url){
 }
 
 async function paging(page, target){
-    const preset = constants[target];
     // go to innerFrame
     let targetFrame;
     if (constants[target].innerIframeId !== "") {
-        console.log(`Find innerFrame, name: ${preset.innerIframeId}`);
-        targetFrame = page.frames().find((frame) => frame.name() === preset.innerIframeId);
+        console.log(`Find innerFrame, name: ${constants[target].innerIframeId}`);
+        targetFrame = page.frames().find((frame) => frame.name() === constants[target].innerIframeId);
     } else {
         targetFrame = page;
     }
@@ -85,7 +81,7 @@ async function paging(page, target){
     try{
         await targetFrame.click("a.btn_comment"); 
         await targetFrame
-            .waitForSelector(preset.postSelectorData.comment, {timeout: 3000})
+            .waitForSelector(constants[target].postSelectorData.comment, {timeout: 3000})
             .catch(()=>{
                 console.log("No comments");
             });
@@ -98,12 +94,11 @@ async function paging(page, target){
 }
 
 async function parser(page, target){
-    const selectorPreset = constants[target].postSelectorData;
-    const title = await crawler.querySelectedData(page, selectorPreset.title, constants.strings.elementInnerContentType.text);
-    const articleUploadDate = dateTime.normalization(await crawler.querySelectedData(page, selectorPreset.articleUploadDate, constants.strings.elementInnerContentType.text));
-    const articleAuthor = await crawler.querySelectedData(page, selectorPreset.articleAuthor, constants.strings.elementInnerContentType.text);
-    const mainText = await crawler.querySelectedData(page, selectorPreset.mainText, constants.strings.elementInnerContentType.text, selectorPreset.unnecessaryElements);
-    const comment = await crawler.querySelectedAllData(page, selectorPreset.comment, constants.strings.elementInnerContentType.text);
+    const title = await crawler.querySelectedData(page, constants[target].postSelectorData.title, constants.strings.elementInnerContentType.text);
+    const articleUploadDate = dateTime.normalization(await crawler.querySelectedData(page, constants[target].postSelectorData.articleUploadDate, constants.strings.elementInnerContentType.text));
+    const articleAuthor = await crawler.querySelectedData(page, constants[target].postSelectorData.articleAuthor, constants.strings.elementInnerContentType.text);
+    const mainText = await crawler.querySelectedData(page, constants[target].postSelectorData.mainText, constants.strings.elementInnerContentType.text, constants[target].postSelectorData.unnecessaryElements);
+    const comment = await crawler.querySelectedAllData(page, constants[target].postSelectorData.comment, constants.strings.elementInnerContentType.text);
 
     return {title, articleUploadDate,articleAuthor, mainText, comment};
 }

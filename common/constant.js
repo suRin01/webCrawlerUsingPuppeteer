@@ -96,9 +96,3 @@ define("daumBlog", {
         unnecessaryElements: ["div.business_license_layer", "div.container_postbtn"]
     }
 });
-
-
-define("SqlQueryString", {
-    insertData: "INSERT INTO data ( source, source_url, title, author, date, main_text) VALUES(?, ?, ?, ?, ?, ?);",
-    insertComment: "INSERT INTO comments ( post_id, comment ) VALUES(?, ?);"
-});
