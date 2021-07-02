@@ -31,12 +31,13 @@ async function start() {
             page = await goto(page,searchPageUrl);
 
             let targetUrlList = await crawler.querySelectedAllData(page, urlPreset.searchPagePostURLSelector, constants.strings.elementInnerContentType.link);
-
+            if(targetUrlList.length === 0){
+                console.log("검색된 링크가 없습니다.");
+                break;
+            }
             // 이전 페이지 검색 결과와 같은게 있음-> 마지막 페이지 이상의 데이터 긁을때
             const UndeduplicatedUrlListCount = previousTargetUrlList.length + targetUrlList.length;
             const UndeduplicatedUrlList = new Set(previousTargetUrlList.concat(targetUrlList));
-
-            // Array.prototype.push.apply(previousTargetUrlList, targetUrlList);
             if (UndeduplicatedUrlList.size !== UndeduplicatedUrlListCount) {
                 console.log("마지막 페이지 였습니다.");
                 break;

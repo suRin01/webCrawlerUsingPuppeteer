@@ -9,6 +9,7 @@ async function querySelectedData(page, selector, type) {
         .catch((e) => {
             console.log(e);
             console.log(`해당 게시물에 ${selector}로 검색된 데이터가 존재하지 않습니다`);
+            return [];
         });
 
     return data;
@@ -16,7 +17,6 @@ async function querySelectedData(page, selector, type) {
 
 async function querySelectedAllData(page, selector, type) {
     const data = await page.evaluate((selector, type) => {
-
 
         const data = document.querySelectorAll(selector);
         const returnData = [];
